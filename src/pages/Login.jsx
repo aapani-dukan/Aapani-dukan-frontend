@@ -3,7 +3,7 @@ import "./style.css";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../config";
-export default function Login() {
+export default function Login({ onLogin }) {
   const [role, setRole] = useState("customer");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
