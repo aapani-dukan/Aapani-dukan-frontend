@@ -16,7 +16,7 @@ export default function SellerRegister() {
 
   const sendOtp = async (e) => {
     e.preventDefault();
-    const res = await fetch("/api/send-otp", {
+    const res = await fetch("https://aapani-dukan-backend-8.onrender.com/api/send-otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mobile: formData.mobile }),
@@ -33,7 +33,7 @@ export default function SellerRegister() {
 
   const verifyAndRegister = async (e) => {
     e.preventDefault();
-    const res = await fetch("/api/register-seller", {
+    const res = await fetch("https://aapani-dukan-backend-8.onrender.com/api/register-seller", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
