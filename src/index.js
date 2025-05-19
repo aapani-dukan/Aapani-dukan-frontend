@@ -1,9 +1,9 @@
 import React from "react";
-import Apl from "./App"
+import App from "./App";
 import { createRoot } from "react-dom/client";
 import AiFix from "./AiFix";
 
-function App() {
+function MainApp() {
   return (
     <div>
       <AiFix />
@@ -11,6 +11,5 @@ function App() {
   );
 }
 
-
 const root = createRoot(document.getElementById("root"));
-root.render(<App />);
+root.render(<MainApp />);
