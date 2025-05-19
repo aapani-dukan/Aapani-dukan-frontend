@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './style.css';
 import Login from './pages/Login';
-import SellerDashboard from './SellerDashboard';
-import CustomerDashboard from './CustomerDashboard';
+import SellerDashboard from './pages/SellerDashboard';
+import CustomerDashboard from './pages/CustomerDashboard';
 import WelcomeMenu from './components/WelcomeMenu'; // Adjusted path
 
 function App() {
