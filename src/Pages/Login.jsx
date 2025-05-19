@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [role, setRole] = useState("customer");
-  const [username, setUsername] = useState("");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
   const [sentOTP, setSentOTP] = useState("");
@@ -26,6 +25,28 @@ export default function Login() {
   const handleLogin = async () => {
     setError("");
 
+    if (role === "admin") {
+      if (!otp) {
+        setError("पासवर्ड भरें");
+        return;
+      }
+
+      const res = await fetch("https://aapani-dukan-backend-8.onrender.com/admin-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ password: otp })
+      });
+
+      const text = await res.text();
+      if (text.includes("Invalid")) {
+        setError("गलत पासवर्ड");
+      } else {
+        alert("एडमिन लॉगिन सफल!");
+        navigate("/admin-dashboard");
+      }
+      return;
+    }
+
     if (role === "customer") {
       if (otp === sentOTP && mobile.length === 10) {
         localStorage.setItem("loggedInCustomer", mobile);
@@ -41,30 +62,12 @@ export default function Login() {
       const registered = localStorage.getItem("registeredSeller");
       if (otp === sentOTP && mobile === registered) {
         localStorage.setItem("loggedInSeller", mobile);
-        alert("लॉगिन सफल!");
+        alert("सेलर लॉगिन सफल!");
         navigate("/seller-dashboard");
       } else {
         setError("गलत मोबाइल नंबर या OTP");
       }
       return;
-    }
-
-    if (!username) {
-      setError("Username भरें");
-      return;
-    }
-
-    const res = await fetch("/admin-login", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ username, password: "cust123" })
-    });
-
-    const text = await res.text();
-    if (text.includes("Invalid")) {
-      setError("गलत लॉगिन जानकारी");
-    } else {
-      navigate("/admin-dashboard");
     }
   };
 
@@ -113,10 +116,10 @@ export default function Login() {
       {role === "admin" ? (
         <>
           <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="password"
+            placeholder="पासवर्ड"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
           />
           <button onClick={handleLogin}>Login</button>
         </>
