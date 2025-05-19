@@ -1,0 +1,328 @@
+/* ===== Base Reset ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  line-height: 1.6;
+}
+
+/* ===== Common Tags ===== */
+h2, h3 {
+  color: #333333;
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li {
+  margin: 5px 0;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"] {
+  padding: 10px;
+  margin: 8px 0;
+  width: 100%;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+/* ===== Buttons ===== */
+button {
+  padding: 10px 16px;
+  margin: 10px 8px 10px 0;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* ===== App Container ===== */
+.app-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ===== Login Container ===== */
+.login-container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-container input {
+  padding: 10px;
+  margin: 8px 0;
+  width: 100%;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.login-container button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.login-container button:hover {
+  background-color: #0056b3;
+}
+
+/* ===== Customer Dashboard ===== */
+.customer-dashboard {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.customer-dashboard h2 {
+  text-align: center;
+  color: #333333;
+}
+
+.order-section {
+  background: #f9f9f9;
+  padding: 16px;
+  margin: 16px 0;
+  border-radius: 8px;
+}
+
+.order-section h3 {
+  margin-bottom: 10px;
+}
+
+.order-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.order-section li {
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  padding: 10px;
+  margin-bottom: 6px;
+  border-radius: 4px;
+}
+
+.order-section strong {
+  display: block;
+}
+
+/* ===== Seller Dashboard ===== */
+.seller-dashboard {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.seller-dashboard h2 {
+  text-align: center;
+  color: #333333;
+}
+
+/* ===== Form Section ===== */
+.form-section {
+  background: #f1f1f1;
+  padding: 16px;
+  margin: 16px 0;
+  border-radius: 8px;
+}
+
+.form-section h3 {
+  margin-bottom: 10px;
+}
+
+.form-section input {
+  padding: 10px;
+  margin: 8px 0;
+  width: 100%;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.form-section button {
+  padding: 10px 16px;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+
+.form-section button:hover {
+  background-color: #0056b3;
+}
+
+/* ===== Product List ===== */
+.product-list {
+  margin-top: 20px;
+}
+
+.product-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.product-list li {
+  background: #fafafa;
+  border: 1px solid #dddddd;
+  padding: 10px;
+  margin-bottom: 6px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.product-list li span {
+  flex: 1;
+}
+
+.product-list button {
+  margin-left: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.product-list button:hover {
+  opacity: 0.9;
+}
+
+.product-list button:nth-child(2) {
+  background-color: #ffc107;
+  color: #212529;
+}
+
+.product-list button:nth-child(3) {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* ===== Card ===== */
+.card {
+  background-color: #ffffff;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== Status Message ===== */
+.status-message {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  padding: 10px;
+  border-radius: 6px;
+  margin: 10px 0 20px;
+  border: 1px solid #bee5eb;
+  font-weight: bold;
+}
+/* ===== Menu Button (⋮) ===== */
+#menuBtn {
+  background: transparent;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: #333456;
+  padding: 4px 8px;
+}
+
+#menu {
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  z-index: 10;
+}
+
+#menu button {
+  background-color: #6c757d;
+  color: white;
+  margin: 4px 0;
+  padding: 8px 12px;
+  width: 100%;
+  border: none;
+  border-radius: 4px;
+  text-align: left;
+  font-size: 1rem;
+}
+
+#menu button:hover {
+  background-color: #5a6268;
+}
+@media (max-width: 600px) {
+  .app-container,
+  .customer-dashboard,
+  .seller-dashboard,
+  .login-container {
+    padding: 10px;
+    width: 95%;
+  }
+
+  button {
+    width: 100%;
+    margin: 8px 0;
+  }
+
+  .product-list li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .product-list button {
+    margin-top: 6px;
+  }
+}
+.header {
+  background-color: #4caf50;
+  color: white;
+  padding: 15px 20px;
+  font-size: 1.5rem;
+  text-align: center;
+  font-weight: bold;
+}
