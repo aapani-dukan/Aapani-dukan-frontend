@@ -1,5 +1,6 @@
 import "./style.css";
 import { useState } from "react";
+import { BASE_URL } from "../config";
 
 export default function SellerRegister() {
   const [formData, setFormData] = useState({
@@ -16,7 +17,7 @@ export default function SellerRegister() {
 
   const sendOtp = async (e) => {
     e.preventDefault();
-    const res = await fetch("https://aapani-dukan-backend-8.onrender.com/api/send-otp", {
+    const res = await fetch(`${BASE_URL}/admin-login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mobile: formData.mobile }),
