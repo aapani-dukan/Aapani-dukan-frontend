@@ -2,7 +2,7 @@
 import "./style.css";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { BASE_URL } from "../config";
 export default function Login() {
   const [role, setRole] = useState("customer");
   const [mobile, setMobile] = useState("");
@@ -30,8 +30,8 @@ export default function Login() {
         setError("पासवर्ड भरें");
         return;
       }
-
-      const res = await fetch("https://aapani-dukan-backend-8.onrender.com/admin-login", {
+const res = await fetch(`${BASE_URL}/admin-login`, {
+      
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ password: otp })
