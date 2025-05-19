@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './style.css';
-import Login from './Login';
+import Login from './pages/Login';
 import SellerDashboard from './SellerDashboard';
 import CustomerDashboard from './CustomerDashboard';
 import WelcomeMenu from './components/WelcomeMenu'; // Adjusted path
