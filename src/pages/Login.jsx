@@ -2,8 +2,8 @@
 import "./style.css";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../config";
-export default function Login({ onLogin }) {
+
+export default function Login() {
   const [role, setRole] = useState("customer");
   const [mobile, setMobile] = useState("");
   const [otp, setOtp] = useState("");
@@ -22,30 +22,8 @@ export default function Login({ onLogin }) {
     }
   };
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     setError("");
-
-    if (role === "admin") {
-      if (!otp) {
-        setError("पासवर्ड भरें");
-        return;
-      }
-const res = await fetch(`${BASE_URL}/admin-login`, {
-      
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ password: otp })
-      });
-
-      const text = await res.text();
-      if (text.includes("Invalid")) {
-        setError("गलत पासवर्ड");
-      } else {
-        alert("एडमिन लॉगिन सफल!");
-        navigate("/admin-dashboard");
-      }
-      return;
-    }
 
     if (role === "customer") {
       if (otp === sentOTP && mobile.length === 10) {
@@ -74,11 +52,7 @@ const res = await fetch(`${BASE_URL}/admin-login`, {
   return (
     <div className="login-form">
       <h2>
-        {role === "admin"
-          ? "एडमिन लॉगिन"
-          : role === "seller"
-          ? "सेलर लॉगिन"
-          : "कस्टमर लॉगिन"}
+        {role === "seller" ? "सेलर लॉगिन" : "कस्टमर लॉगिन"}
       </h2>
 
       <div>
@@ -100,47 +74,26 @@ const res = await fetch(`${BASE_URL}/admin-login`, {
           />
           Seller
         </label>
-        <label>
-          <input
-            type="radio"
-            value="admin"
-            checked={role === "admin"}
-            onChange={(e) => setRole(e.target.value)}
-          />
-          Admin
-        </label>
       </div>
 
       {error && <div style={{ color: "red", marginTop: "10px" }}>{error}</div>}
 
-      {role === "admin" ? (
-        <>
-          <input
-            type="password"
-            placeholder="पासवर्ड"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-          />
-          <button onClick={handleLogin}>Login</button>
-        </>
-      ) : (
-        <>
-          <input
-            type="text"
-            placeholder="मोबाइल नंबर"
-            value={mobile}
-            onChange={(e) => setMobile(e.target.value)}
-          />
-          <button onClick={handleSendOTP}>OTP भेजें</button>
-          <input
-            type="text"
-            placeholder="OTP दर्ज करें"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-          />
-          <button onClick={handleLogin}>लॉगिन करें</button>
-        </>
-      )}
+      <>
+        <input
+          type="text"
+          placeholder="मोबाइल नंबर"
+          value={mobile}
+          onChange={(e) => setMobile(e.target.value)}
+        />
+        <button onClick={handleSendOTP}>OTP भेजें</button>
+        <input
+          type="text"
+          placeholder="OTP दर्ज करें"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+        />
+        <button onClick={handleLogin}>लॉगिन करें</button>
+      </>
     </div>
   );
 }
