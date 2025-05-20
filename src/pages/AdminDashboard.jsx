@@ -1,125 +1,128 @@
-import React, { useEffect, useState } from "react";
-import { BASE_URL } from "../config";
+import React, { useEffect, useState } from 'react';
+import { BASE_URL } from '../config';
 
 export default function AdminDashboard() {
-  const [pendingSellers, setPendingSellers] = useState([]);
-  const [pendingProducts, setPendingProducts] = useState([]);
+  const [sellers, setSellers] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [message, setMessage] = useState('');
 
-  // Initial fetch for pending sellers and products
+  const adminToken = localStorage.getItem('adminToken');
+
   useEffect(() => {
-    fetch(`${BASE_URL}/pending-sellers`)
-      .then((res) => res.json())
-      .then((data) => setPendingSellers(data))
-      .catch((err) => console.error("Seller fetch error:", err));
-
-    fetch(`${BASE_URL}/products`)
-      .then((res) => res.json())
-      .then((data) => setPendingProducts(data.filter((p) => !p.approved)))
-      .catch((err) => console.error("Product fetch error:", err));
+    fetchSellers();
+    fetchProducts();
   }, []);
 
-  const approveSeller = async (mobile) => {
-    await fetch(`${BASE_URL}/approve-seller`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mobile }),
-    });
-    setPendingSellers((prev) => prev.filter((s) => s.mobile !== mobile));
-    alert("Seller Approved: " + mobile);
+  const fetchSellers = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/sellers`, {
+        headers: { Authorization: `Bearer ${adminToken}` },
+      });
+      const data = await res.json();
+      if (res.ok) setSellers(data);
+    } catch (err) {
+      console.error('Failed to fetch sellers:', err);
+    }
   };
 
-  const rejectSeller = async (mobile) => {
-    await fetch(`${BASE_URL}/reject-seller`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mobile }),
-    });
-    setPendingSellers((prev) => prev.filter((s) => s.mobile !== mobile));
-    alert("Seller Rejected: " + mobile);
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/products`, {
+        headers: { Authorization: `Bearer ${adminToken}` },
+      });
+      const data = await res.json();
+      if (res.ok) setProducts(data);
+    } catch (err) {
+      console.error('Failed to fetch products:', err);
+    }
   };
 
-  const handleApproveProduct = async (product) => {
-    await fetch(`${BASE_URL}/approve-product`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(product),
-    });
-    setPendingProducts((prev) =>
-      prev.filter((p) => p.name !== product.name || p.mobile !== product.mobile)
-    );
-    alert("Product Approved: " + product.name);
+  const approveSeller = async (id) => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/sellers/${id}/approve`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${adminToken}` },
+      });
+      if (res.ok) {
+        setMessage('Seller approved successfully.');
+        fetchSellers();
+      }
+    } catch (err) {
+      console.error('Failed to approve seller:', err);
+    }
   };
 
-  const handleRejectProduct = async (product) => {
-    await fetch(`${BASE_URL}/reject-product`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(product),
-    });
-    setPendingProducts((prev) =>
-      prev.filter((p) => p.name !== product.name || p.mobile !== product.mobile)
-    );
-    alert("Product Rejected: " + product.name);
+  const approveProduct = async (id) => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/products/${id}/approve`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${adminToken}` },
+      });
+      if (res.ok) {
+        setMessage('Product approved successfully.');
+        fetchProducts();
+      }
+    } catch (err) {
+      console.error('Failed to approve product:', err);
+    }
   };
 
-  const handleUpdateProduct = async (product, updatedFields) => {
-    const updatedProduct = { ...product, ...updatedFields };
-
-    await fetch(`${BASE_URL}/update-product`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedProduct),
-    });
-
-    alert("Updated Product: " + product.name);
+  const handleFixAi = () => {
+    alert('FixAi functionality will be implemented here.');
   };
 
   return (
-    <div className="admin-dashboard">
-      <h2>Welcome Admin!</h2>
+    <div className="admin-dashboard p-4">
+      <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
+      {message && <p className="mb-4 text-green-600">{message}</p>}
+      <button
+        onClick={handleFixAi}
+        className="bg-purple-600 text-white px-4 py-2 mb-4"
+      >
+        FixAi
+      </button>
 
-      <h3>Pending Sellers</h3>
-      {pendingSellers.length === 0 ? (
-        <p>No pending sellers.</p>
-      ) : (
-        pendingSellers.map((seller, index) => (
-          <div key={index} className="seller-card">
-            <p><strong>Shop:</strong> {seller.shopName}</p>
-            <p><strong>Mobile:</strong> {seller.mobile}</p>
-            <button onClick={() => approveSeller(seller.mobile)}>Approve</button>
-            <button onClick={() => rejectSeller(seller.mobile)}>Reject</button>
-          </div>
-        ))
-      )}
+      <div className="sellers-section mb-8">
+        <h3 className="text-xl font-semibold mb-2">Sellers</h3>
+        <ul>
+          {sellers.map((seller) => (
+            <li key={seller.id} className="mb-2">
+              {seller.name} - {seller.shopName} -{' '}
+              {seller.approved ? (
+                <span className="text-green-600">Approved</span>
+              ) : (
+                <button
+                  onClick={() => approveSeller(seller.id)}
+                  className="bg-blue-500 text-white px-2 py-1"
+                >
+                  Approve
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      <h3>Pending Products</h3>
-      {pendingProducts.length === 0 ? (
-        <p>No pending products.</p>
-      ) : (
-        pendingProducts.map((product, index) => (
-          <div key={index} className="product-card">
-            <p><strong>Name:</strong> {product.name}</p>
-            <p><strong>Price:</strong> ₹{product.price}</p>
-            <p><strong>Shop:</strong> {product.shopName}</p>
-            <input
-              type="number"
-              placeholder="Discount %"
-              onChange={(e) => product.discount = Number(e.target.value)}
-            />
-            <input
-              type="number"
-              placeholder="Delivery Charge ₹"
-              onChange={(e) => product.deliveryCharge = Number(e.target.value)}
-            />
-            <button onClick={() => handleApproveProduct(product)}>Approve</button>
-            <button onClick={() => handleRejectProduct(product)}>Reject</button>
-            <button onClick={() => handleUpdateProduct(product, {
-              discount: product.discount || 0,
-              deliveryCharge: product.deliveryCharge || 0
-            })}>
-              Update Info
-            </button>
-          </div>
-        ))
-      )}
-    </d
+      <div className="products-section">
+        <h3 className="text-xl font-semibold mb-2">Products</h3>
+        <ul>
+          {products.map((product) => (
+            <li key={product.id} className="mb-2">
+              {product.name} - ₹{product.price} -{' '}
+              {product.approved ? (
+                <span className="text-green-600">Approved</span>
+              ) : (
+                <button
+                  onClick={() => approveProduct(product.id)}
+                  className="bg-blue-500 text-white px-2 py-1"
+                >
+                  Approve
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
