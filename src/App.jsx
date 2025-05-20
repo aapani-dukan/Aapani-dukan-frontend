@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
+nimport React, { useState } from 'react';
 import './pages/style.css';
 import Login from './pages/Login';
 import SellerDashboard from './pages/SellerDashboard';
 import CustomerDashboard from './pages/CustomerDashboard';
 import WelcomeMenu from './components/WelcomeMenu'; // Adjusted path
-import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./pages/AdminDashboard"; // यह पेज आप पहले से बना चुके हैं
+<>
+  <Route path="/admin8404-login" element={<AdminLogin />} />
+  <Route path="/admin-dashboard" element={
+    !user ? (
+      <Navigate to="/admin8404-login" replace />
+    ) : (
+      <AdminDashboard user={user} />
+    )
+  } />
+</>
 function App() {
   const [user, setUser] = useState(null);
   const [products, setProducts] = useState([]);
