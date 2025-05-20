@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../config";
 
-
 export default function CustomerDashboard() {
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
@@ -13,7 +12,6 @@ export default function CustomerDashboard() {
   const customerMobile = localStorage.getItem("loggedInCustomer");
 
   useEffect(() => {
-    // Approved products लाएं
     fetch(`${BASE_URL}/products`)
       .then((res) => res.json())
       .then((data) => {
@@ -22,7 +20,6 @@ export default function CustomerDashboard() {
       })
       .catch((err) => console.error("Product fetch error:", err));
 
-    // Order history भी लाएं
     if (customerMobile) {
       fetch(`${BASE_URL}/orders?mobile=${customerMobile}`)
         .then((res) => res.json())
@@ -65,7 +62,6 @@ export default function CustomerDashboard() {
     if (res.ok) {
       alert(`Order placed successfully via ${paymentMethod}`);
       setCart([]);
-      // Refresh orders
       const updated = await fetch(`${BASE_URL}/orders?mobile=${customerMobile}`);
       const data = await updated.json();
       setOrders(data);
@@ -74,20 +70,41 @@ export default function CustomerDashboard() {
     }
   };
 
+  const handleNavigate = (path) => {
+    setMenuOpen(false);
+    navigate(path);
+  };
+
   return (
-    <div className="dashboard">
+    <div className="dashboard" style={{ position: "relative", padding: "20px" }}>
+      {/* Header */}
       <div className="header">
-        <div className="menu-icon" onClick={() => setMenuOpen(!menuOpen)}>⋮</div>
-        {menuOpen && (
-          <div className="menu">
-            <div onClick={() => navigate("/login")}>Customer Login</div>
-            <div onClick={() => navigate("/seller-login")}>Seller Login</div>
-            <div onClick={() => navigate("/admin-login")}>Admin Login</div>
-          </div>
-        )}
+        <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+          <button onClick={() => setMenuOpen(!menuOpen)} style={{ fontSize: "24px" }}>
+            ⋮
+          </button>
+          {menuOpen && (
+            <div style={{
+              position: "absolute",
+              top: "35px",
+              right: "0",
+              background: "white",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+              boxShadow: "0 0 5px rgba(0,0,0,0.2)",
+              zIndex: 10
+            }}>
+              <div onClick={() => handleNavigate("/login")} style={menuItemStyle}>Customer Login</div>
+              <div onClick={() => handleNavigate("/seller-login")} style={menuItemStyle}>Seller Login</div>
+              <div onClick={() => handleNavigate("/seller-register")} style={menuItemStyle}>Seller Registration</div>
+              <div onClick={() => handleNavigate("/admin-login")} style={menuItemStyle}>Admin Login</div>
+            </div>
+          )}
+        </div>
         <h2>Customer Dashboard</h2>
       </div>
 
+      {/* Product List */}
       <div className="product-list">
         <h3>Products</h3>
         {products.map((product) => (
@@ -100,6 +117,7 @@ export default function CustomerDashboard() {
         ))}
       </div>
 
+      {/* Cart Summary */}
       <div className="cart-summary">
         <h3>Bucket Items: {cart.length}</h3>
         <ul>
@@ -111,6 +129,7 @@ export default function CustomerDashboard() {
         {cart.length > 0 && <button onClick={handleBuy}>Buy</button>}
       </div>
 
+      {/* Order History */}
       <div className="order-history">
         <h3>Order History</h3>
         {orders.length === 0 ? (
@@ -134,3 +153,9 @@ export default function CustomerDashboard() {
     </div>
   );
 }
+
+const menuItemStyle = {
+  padding: "10px",
+  cursor: "pointer",
+  borderBottom: "1px solid #eee",
+};
