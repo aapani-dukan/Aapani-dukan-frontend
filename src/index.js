@@ -1,15 +1,16 @@
 import React from "react";
-import App from "./App";
 import { createRoot } from "react-dom/client";
-import AiFix from "./AiFix";
-
-function MainApp() {
-  return (
-    <div>
-      <AiFix />
-    </div>
-  );
-}
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import App from "./App";        // यह आपका पूरा ऐप (Login आदि) है
+import AiFix from "./AiFix";    // AI Fix Page
 
 const root = createRoot(document.getElementById("root"));
-root.render(<MainApp />);
+
+root.render(
+  <Router>
+    <Routes>
+      <Route path="/" element={<App />} />
+      <Route path="/fix" element={<AiFix />} />
+    </Routes>
+  </Router>
+);
