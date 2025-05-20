@@ -84,20 +84,30 @@ export default function CustomerDashboard() {
             ⋮
           </button>
           {menuOpen && (
-            <div style={{
-              position: "absolute",
-              top: "35px",
-              right: "0",
-              background: "white",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
-              boxShadow: "0 0 5px rgba(0,0,0,0.2)",
-              zIndex: 10
-            }}>
-              <div onClick={() => handleNavigate("/login")} style={menuItemStyle}>Customer Login</div>
-              <div onClick={() => handleNavigate("/seller-login")} style={menuItemStyle}>Seller Login</div>
-              <div onClick={() => handleNavigate("/seller-register")} style={menuItemStyle}>Seller Registration</div>
-              <div onClick={() => handleNavigate("/admin-login")} style={menuItemStyle}>Admin Login</div>
+            <div
+              style={{
+                position: "absolute",
+                top: "35px",
+                right: "0",
+                background: "white",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                boxShadow: "0 0 5px rgba(0,0,0,0.2)",
+                zIndex: 10,
+                minWidth: "150px"
+              }}
+            >
+              {menuItems.map((item, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleNavigate(item.path)}
+                  style={menuItemStyle}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#f0f0f0"}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "white"}
+                >
+                  {item.label}
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -154,8 +164,17 @@ export default function CustomerDashboard() {
   );
 }
 
+const menuItems = [
+  { label: "Customer Login", path: "/login" },
+  { label: "Seller Login", path: "/seller-login" },
+  { label: "Seller Registration", path: "/seller-register" },
+  { label: "Admin Login", path: "/admin-login" },
+];
+
 const menuItemStyle = {
   padding: "10px",
   cursor: "pointer",
   borderBottom: "1px solid #eee",
+  color: "black",
+  backgroundColor: "white",
 };
