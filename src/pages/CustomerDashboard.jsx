@@ -164,11 +164,11 @@ export default function CustomerDashboard() {
   );
 }
 
+// Admin Login removed
 const menuItems = [
   { label: "Customer Login", path: "/login" },
   { label: "Seller Login", path: "/seller-login" },
   { label: "Seller Registration", path: "/seller-register" },
-  { label: "Admin Login", path: "/admin-login" },
 ];
 
 const menuItemStyle = {
