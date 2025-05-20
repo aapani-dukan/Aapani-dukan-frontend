@@ -1,99 +1,49 @@
 // Login.jsx
-import "./style.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import app from "./firebase"; // ये वही फाइल जहां आपने firebase config डाला है
+import "./style.css";
 
 export default function Login() {
-  const [role, setRole] = useState("customer");
-  const [mobile, setMobile] = useState("");
-  const [otp, setOtp] = useState("");
-  const [sentOTP, setSentOTP] = useState("");
+  const [user, setUser] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
 
-  const handleSendOTP = () => {
+  useEffect(() => {
+    // अगर पहले से लॉगिन है तो डायरेक्ट नेविगेट कर दें
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    if (loggedInUser) {
+      navigate("/dashboard");  // अपनी डैशबोर्ड की path यहाँ डालें
+    }
+  }, [navigate]);
+
+  const handleGoogleLogin = () => {
     setError("");
-    if (mobile.length === 10) {
-      const demoOTP = "123456";
-      setSentOTP(demoOTP);
-      alert("OTP भेजा गया (डेमो: 123456)");
-    } else {
-      setError("सही मोबाइल नंबर दर्ज करें");
-    }
-  };
-
-  const handleLogin = () => {
-    setError("");
-
-    if (role === "customer") {
-      if (otp === sentOTP && mobile.length === 10) {
-        localStorage.setItem("loggedInCustomer", mobile);
-        alert("कस्टमर लॉगिन सफल!");
-        navigate("/customer-dashboard");
-      } else {
-        setError("गलत OTP या मोबाइल नंबर");
-      }
-      return;
-    }
-
-    if (role === "seller") {
-      const registered = localStorage.getItem("registeredSeller");
-      if (otp === sentOTP && mobile === registered) {
-        localStorage.setItem("loggedInSeller", mobile);
-        alert("सेलर लॉगिन सफल!");
-        navigate("/seller-dashboard");
-      } else {
-        setError("गलत मोबाइल नंबर या OTP");
-      }
-      return;
-    }
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user = result.user;
+        localStorage.setItem("loggedInUser", JSON.stringify(user));
+        alert(`स्वागत है, ${user.displayName}`);
+        navigate("/dashboard");  // अपनी डैशबोर्ड की path यहाँ डालें
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("लॉगिन में समस्या आई, कृपया पुनः प्रयास करें");
+      });
   };
 
   return (
     <div className="login-form">
-      <h2>
-        {role === "seller" ? "सेलर लॉगिन" : "कस्टमर लॉगिन"}
-      </h2>
+      <h2>Google से लॉगिन करें</h2>
 
-      <div>
-        <label>
-          <input
-            type="radio"
-            value="customer"
-            checked={role === "customer"}
-            onChange={(e) => setRole(e.target.value)}
-          />
-          Customer
-        </label>
-        <label>
-          <input
-            type="radio"
-            value="seller"
-            checked={role === "seller"}
-            onChange={(e) => setRole(e.target.value)}
-          />
-          Seller
-        </label>
-      </div>
+      {error && <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>}
 
-      {error && <div style={{ color: "red", marginTop: "10px" }}>{error}</div>}
-
-      <>
-        <input
-          type="text"
-          placeholder="मोबाइल नंबर"
-          value={mobile}
-          onChange={(e) => setMobile(e.target.value)}
-        />
-        <button onClick={handleSendOTP}>OTP भेजें</button>
-        <input
-          type="text"
-          placeholder="OTP दर्ज करें"
-          value={otp}
-          onChange={(e) => setOtp(e.target.value)}
-        />
-        <button onClick={handleLogin}>लॉगिन करें</button>
-      </>
+      <button onClick={handleGoogleLogin} className="google-login-btn">
+        Google Login
+      </button>
     </div>
   );
 }
