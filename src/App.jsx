@@ -1,4 +1,4 @@
-nimport React, { useState } from 'react';
+import React, { useState } from 'react';
 import './pages/style.css';
 import Login from './pages/Login';
 import SellerDashboard from './pages/SellerDashboard';
