@@ -17,31 +17,48 @@ export default function SellerRegister() {
 
   const sendOtp = async (e) => {
     e.preventDefault();
-    const res = await fetch(`${BASE_URL}/admin-login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mobile: formData.mobile }),
-    });
+    setMessage("Sending OTP...");
 
-    const data = await res.json();
-    if (res.ok) {
-      setStep("otp");
-      setMessage("OTP भेज दिया गया है। कृपया OTP दर्ज करें।");
-    } else {
-      setMessage(data.message || "OTP भेजने में त्रुटि हुई।");
+    try {
+      const res = await fetch(`${BASE_URL}/send-otp`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile: formData.mobile }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setStep("otp");
+        setMessage("OTP भेज दिया गया है। कृपया OTP दर्ज करें।");
+      } else {
+        setMessage(data.message || "OTP भेजने में त्रुटि हुई।");
+      }
+    } catch (err) {
+      setMessage("सर्वर से संपर्क नहीं हो पाया।");
     }
   };
 
   const verifyAndRegister = async (e) => {
     e.preventDefault();
-    const res = await fetch("https://aapani-dukan-backend-8.onrender.com/api/register-seller", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+    setMessage("Verifying...");
 
-    const data = await res.json();
-    setMessage(data.message || "कोई उत्तर नहीं मिला");
+    try {
+      const res = await fetch(`${BASE_URL}/register-seller`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      setMessage(data.message || "कोई उत्तर नहीं मिला");
+
+      if (res.ok) {
+        setStep("done");
+      }
+    } catch (err) {
+      setMessage("रजिस्ट्रेशन में त्रुटि हुई।");
+    }
   };
 
   return (
@@ -95,6 +112,12 @@ export default function SellerRegister() {
             Verify & Register
           </button>
         </form>
+      )}
+
+      {step === "done" && (
+        <div className="text-green-700 text-center mt-4">
+          Seller पंजीकरण सफल हुआ। कृपया अनुमोदन की प्रतीक्षा करें।
+        </div>
       )}
 
       {message && <p className="mt-2 text-green-600">{message}</p>}
