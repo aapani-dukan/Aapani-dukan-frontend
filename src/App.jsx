@@ -7,7 +7,6 @@ import SellerDashboard from './pages/SellerDashboard';
 import CustomerDashboard from './pages/CustomerDashboard';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
-import WelcomeMenu from './components/WelcomeMenu';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -30,10 +29,8 @@ function App() {
       </Routes>
 
       {!user ? (
-        <>
-          <WelcomeMenu />
-          <Login onLogin={setUser} />
-        </>
+        // App खुलते ही customer dashboard दिखेगा
+        <CustomerDashboard user={null} products={products} />
       ) : user.role === 'seller' ? (
         <SellerDashboard user={user} products={products} setProducts={setProducts} />
       ) : (
