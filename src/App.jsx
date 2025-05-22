@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import jwt_decode from "jwt-decode"; // npm install jwt-decode
+import { jwtDecode } from "jwt-decode";
 
 import Login from "./pages/Login";
 import SellerDashboard from "./pages/SellerDashboard";
@@ -18,7 +18,7 @@ function App() {
     if (token) {
       try {
         // JWT decode करके user info निकालो
-        const decoded = jwt_decode(token);
+      const decoded = jwtDecode(token);
         // example: decoded में uid, email, role होना चाहिए (backend के हिसाब से)
         setUser({
           uid: decoded.uid,
