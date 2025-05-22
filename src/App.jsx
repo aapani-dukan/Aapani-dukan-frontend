@@ -19,6 +19,7 @@ function App() {
       try {
         // JWT decode करके user info निकालो
       const decoded = jwtDecode(token);
+        console.log("Decoded Token:", decoded);
         // example: decoded में uid, email, role होना चाहिए (backend के हिसाब से)
         setUser({
           uid: decoded.uid,
