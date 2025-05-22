@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 import Login from "./pages/Login";
 import SellerDashboard from "./pages/SellerDashboard";
