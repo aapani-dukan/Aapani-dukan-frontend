@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import jwt_decode from "jwt-decode"; // npm install jwt-decode
 
 import Login from "./pages/Login";
 import SellerDashboard from "./pages/SellerDashboard";
@@ -13,23 +13,27 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) {
-        // Example: role को Firebase से या user profile से लाना होगा, अभी hardcoded है
-        // जरूरत हो तो Firestore या Realtime DB से role fetch करें
+    // localStorage से JWT token लें
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      try {
+        // JWT decode करके user info निकालो
+        const decoded = jwt_decode(token);
+        // example: decoded में uid, email, role होना चाहिए (backend के हिसाब से)
         setUser({
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          role: "customer", // example role, इसको अपने logic से replace करें
+          uid: decoded.uid,
+          email: decoded.email,
+          role: decoded.role,
         });
-      } else {
+      } catch (error) {
+        console.error("Invalid token", error);
         setUser(null);
+        localStorage.removeItem("jwtToken");
       }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    } else {
+      setUser(null);
+    }
+    setLoading(false);
   }, []);
 
   if (loading) {
