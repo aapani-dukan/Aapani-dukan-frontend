@@ -1,39 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-
 import jwtDecode from "jwt-decode";
+
 import Login from "./pages/Login";
 import SellerDashboard from "./pages/SellerDashboard";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import AuthCallback from "./pages/AuthCallback"; // Don't forget to include this
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // localStorage से JWT token लें
     const token = localStorage.getItem("jwtToken");
+
     if (token) {
       try {
-        // JWT decode करके user info निकालो
-      const decoded = jwtDecode(token);
+        const decoded = jwtDecode(token);
         console.log("Decoded Token:", decoded);
-        // example: decoded में uid, email, role होना चाहिए (backend के हिसाब से)
-        setUser({
-          uid: decoded.uid,
-          email: decoded.email,
-          role: decoded.role,
-        });
+
+        if (decoded.uid && decoded.role && decoded.email) {
+          setUser({
+            uid: decoded.uid,
+            email: decoded.email,
+            role: decoded.role,
+          });
+        } else {
+          throw new Error("Token is missing required fields");
+        }
       } catch (error) {
-        console.error("Invalid token", error);
+        console.error("Invalid token:", error);
         setUser(null);
         localStorage.removeItem("jwtToken");
       }
     } else {
       setUser(null);
     }
+
     setLoading(false);
   }, []);
 
@@ -45,6 +50,7 @@ function App() {
     <div className="app">
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
 
         {/* Admin Routes */}
         <Route
@@ -93,8 +99,12 @@ function App() {
             user ? (
               user.role === "seller" ? (
                 <Navigate to="/seller-dashboard" replace />
-              ) : (
+              ) : user.role === "customer" ? (
                 <Navigate to="/customer-dashboard" replace />
+              ) : user.role === "admin" ? (
+                <Navigate to="/admin-dashboard" replace />
+              ) : (
+                <Navigate to="/login" replace />
               )
             ) : (
               <Navigate to="/login" replace />
