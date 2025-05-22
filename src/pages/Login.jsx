@@ -1,38 +1,28 @@
 // Login.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import app from "./firebase"; // ये वही फाइल जहां आपने firebase config डाला है
-import "./style.css";
 
 export default function Login() {
-  const [user, setUser] = useState(null);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
 
   useEffect(() => {
-    // अगर पहले से लॉगिन है तो डायरेक्ट नेविगेट कर दें
-    const loggedInUser = localStorage.getItem("loggedInUser");
-    if (loggedInUser) {
-      navigate("/dashboard");  // अपनी डैशबोर्ड की path यहाँ डालें
+    // अगर पहले से token है, तो सीधे डैशबोर्ड पर जाएं
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/dashboard");
     }
   }, [navigate]);
 
   const handleGoogleLogin = () => {
     setError("");
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const user = result.user;
-        localStorage.setItem("loggedInUser", JSON.stringify(user));
-        alert(`स्वागत है, ${user.displayName}`);
-        navigate("/dashboard");  // अपनी डैशबोर्ड की path यहाँ डालें
-      })
-      .catch((err) => {
-        console.error(err);
-        setError("लॉगिन में समस्या आई, कृपया पुनः प्रयास करें");
-      });
+    try {
+      // Backend के Google OAuth endpoint पर redirect करें
+      window.location.href = "https://your-backend.com/auth/google";
+    } catch (err) {
+      console.error(err);
+      setError("लॉगिन में समस्या आई, कृपया पुनः प्रयास करें");
+    }
   };
 
   return (
