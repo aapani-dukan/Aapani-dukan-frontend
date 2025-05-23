@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
-
-import SellerRegister from "./pages/SellerRegister";
+import Login from "./pages/Login";
 import SellerDashboard from "./pages/SellerDashboard";
+import SellerRegister from "./pages/SellerRegister";
+import CustomerDashboard from "./pages/CustomerDashboard";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AuthCallback from "./pages/AuthCallback";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
 
     if (token) {
+      // अगर आपका jwtDecode और user set करने का लॉजिक है तो रखें
+      // नहीं तो आप इसे फिलहाल हटा भी सकते हैं
       try {
-        const decoded = JSON.parse(atob(token)); // simulate decode
+        const decoded = jwtDecode(token);
         setUser({
           uid: decoded.uid,
           email: decoded.email,
@@ -24,26 +30,55 @@ function App() {
         setUser(null);
         localStorage.removeItem("jwtToken");
       }
+    } else {
+      setUser(null);
     }
+
+    setLoading(false);
   }, []);
 
-  return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/seller-register" replace />} />
+  if (loading) {
+    return <div>लोड हो रहा है...</div>;
+  }
 
-      <Route path="/seller-register" element={<SellerRegister />} />
-      
-      <Route
-        path="/seller-dashboard"
-        element={
-          user && user.role === "seller" ? (
-            <SellerDashboard user={user} />
-          ) : (
-            <Navigate to="/seller-register" replace />
-          )
-        }
-      />
-    </Routes>
+  return (
+    <div className="app">
+      <Routes>
+        <Route path="/" element={<Navigate to="/customer-dashboard" replace />} />
+
+        <Route path="/login" element={<Login />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route
+          path="/admin-dashboard"
+          element={
+            user && user.role === "admin" ? (
+              <AdminDashboard user={user} />
+            ) : (
+              <Navigate to="/admin-login" replace />
+            )
+          }
+        />
+
+        {/* Seller Routes */}
+        <Route path="/seller-register" element={<SellerRegister />} />
+        <Route
+          path="/seller-dashboard"
+          element={
+            user && user.role === "seller" ? (
+              <SellerDashboard user={user} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+        {/* Customer Route — accessible by all */}
+        <Route path="/customer-dashboard" element={<CustomerDashboard user={user} />} />
+      </Routes>
+    </div>
   );
 }
 
