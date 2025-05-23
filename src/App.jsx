@@ -49,6 +49,7 @@ function App() {
   return (
     <div className="app">
       <Routes>
+        <Route path="/" element={<Navigate to="/customer-dashboard" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
 
