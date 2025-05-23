@@ -78,7 +78,7 @@ export default function CustomerDashboard() {
   return (
     <div className="dashboard" style={{ position: "relative", padding: "20px" }}>
       {/* Header */}
-      <div className="header">
+      <div className="header" style={{ position: "relative" }}>
         <div style={{ position: "absolute", top: "10px", right: "10px" }}>
           <button onClick={() => setMenuOpen(!menuOpen)} style={{ fontSize: "24px" }}>
             ⋮
@@ -164,7 +164,6 @@ export default function CustomerDashboard() {
   );
 }
 
-// Admin Login removed
 const menuItems = [
   { label: "Customer Login", path: "/login" },
   { label: "Seller Login", path: "/seller-login" },
