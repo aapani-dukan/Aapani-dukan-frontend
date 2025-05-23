@@ -1,6 +1,5 @@
-React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import React, { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
 
 import Login from "./pages/Login";
 import SellerDashboard from "./pages/SellerDashboard";
@@ -11,48 +10,26 @@ import AuthCallback from "./pages/AuthCallback";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const location = useLocation();
 
   useEffect(() => {
+    // फिलहाल JWT decode हटा दिया गया है
     const token = localStorage.getItem("jwtToken");
 
     if (token) {
-      try {
-        const decoded = jwtDecode(token);
-        setUser({
-          uid: decoded.uid,
-          email: decoded.email,
-          role: decoded.role,
-        });
-      } catch (error) {
-        console.error("Invalid token:", error);
-        localStorage.removeItem("jwtToken");
-        setUser(null);
-      }
-    }
-
-    setLoading(false);
-  }, []);
-
-  if (loading) {
-    return <div>लोड हो रहा है...</div>;
-  }
-
-  // अगर user root path पर है "/" और login कर चुका है
-  if (location.pathname === "/") {
-    if (user) {
-      if (user.role === "admin") return <Navigate to="/admin-dashboard" replace />;
-      if (user.role === "seller") return <Navigate to="/seller-dashboard" replace />;
-      return <Navigate to="/customer-dashboard" replace />;
+      setUser({
+        uid: "dummyUID",
+        email: "dummy@example.com",
+        role: "customer", // या "admin", "seller" जैसे roles आप manually बदल सकते हैं
+      });
     } else {
-      return <Navigate to="/login" replace />;
+      setUser(null);
     }
-  }
+  }, []);
 
   return (
     <div className="app">
       <Routes>
+        <Route path="/" element={<CustomerDashboard user={user} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/admin8404-login" element={<AdminLogin />} />
