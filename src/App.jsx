@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 import Login from "./pages/Login";
 import SellerDashboard from "./pages/SellerDashboard";
 import CustomerDashboard from "./pages/CustomerDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
-import AuthCallback from "./pages/AuthCallback"; // Don't forget to include this
+import AuthCallback from "./pages/AuthCallback";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -19,17 +19,11 @@ function App() {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        console.log("Decoded Token:", decoded);
-
-        if (decoded.uid && decoded.role && decoded.email) {
-          setUser({
-            uid: decoded.uid,
-            email: decoded.email,
-            role: decoded.role,
-          });
-        } else {
-          throw new Error("Token is missing required fields");
-        }
+        setUser({
+          uid: decoded.uid,
+          email: decoded.email,
+          role: decoded.role,
+        });
       } catch (error) {
         console.error("Invalid token:", error);
         setUser(null);
@@ -49,15 +43,14 @@ function App() {
   return (
     <div className="app">
       <Routes>
-        <Route path="/" element={<Navigate to="/customer-dashboard" />} />
+        {/* Redirect all users to customer-dashboard */}
+        <Route path="/" element={<Navigate to="/customer-dashboard" replace />} />
+        
         <Route path="/login" element={<Login />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
 
         {/* Admin Routes */}
-        <Route
-          path="/admin8404-login"
-          element={<AdminLogin />}
-        />
+        <Route path="/admin8404-login" element={<AdminLogin />} />
         <Route
           path="/admin-dashboard"
           element={
@@ -81,37 +74,8 @@ function App() {
           }
         />
 
-        {/* Customer Routes */}
-        <Route
-          path="/customer-dashboard"
-          element={
-            user && user.role === "customer" ? (
-              <CustomerDashboard user={user} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-
-        {/* Default */}
-        <Route
-          path="/"
-          element={
-            user ? (
-              user.role === "seller" ? (
-                <Navigate to="/seller-dashboard" replace />
-              ) : user.role === "customer" ? (
-                <Navigate to="/customer-dashboard" replace />
-              ) : user.role === "admin" ? (
-                <Navigate to="/admin-dashboard" replace />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
+        {/* Customer Route — accessible by all */}
+        <Route path="/customer-dashboard" element={<CustomerDashboard user={user} />} />
       </Routes>
     </div>
   );
