@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 
 import Login from "./pages/Login";
@@ -12,9 +12,9 @@ import AuthCallback from "./pages/AuthCallback";
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // User token check & set user state
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
 
@@ -36,7 +36,6 @@ function App() {
     setLoading(false);
   }, []);
 
-  // Logout function clears token and user state, navigates to login
   const logout = () => {
     localStorage.removeItem("jwtToken");
     setUser(null);
@@ -49,18 +48,76 @@ function App() {
 
   return (
     <div className="app">
-      {/* Optional: Header with logout button */}
-      {user && (
-        <header style={{ padding: "10px", background: "#eee", marginBottom: "20px" }}>
-          <span>स्वागत है, {user.email} ({user.role})</span>
-          <button onClick={logout} style={{ marginLeft: "20px" }}>
-            Logout
-          </button>
-        </header>
-      )}
+      {/* Navbar with three-dot menu */}
+      <nav style={{ position: "relative", padding: "10px", backgroundColor: "#f0f0f0" }}>
+        <span style={{ fontWeight: "bold" }}>MyApp</span>
+
+        {/* Three-dot button */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          style={{
+            float: "right",
+            fontSize: "24px",
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            userSelect: "none",
+          }}
+          aria-label="Menu"
+        >
+          &#x22EE; {/* vertical ellipsis */}
+        </button>
+
+        {/* Dropdown menu */}
+        {menuOpen && (
+          <div
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "40px",
+              backgroundColor: "white",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              zIndex: 1000,
+              minWidth: "160px",
+            }}
+            onMouseLeave={() => setMenuOpen(false)}
+          >
+            {!user ? (
+              <>
+                <Link to="/login" style={menuItemStyle} onClick={() => setMenuOpen(false)}>
+                  Customer Login
+                </Link>
+                <Link to="/login" style={menuItemStyle} onClick={() => setMenuOpen(false)}>
+                  Seller Login
+                </Link>
+                <Link to="/admin8404-login" style={menuItemStyle} onClick={() => setMenuOpen(false)}>
+                  Admin Login
+                </Link>
+              </>
+            ) : (
+              <>
+                <div style={{ padding: "8px 16px", borderBottom: "1px solid #ddd" }}>
+                  Logged in as: <br />
+                  <strong>{user.email}</strong> ({user.role})
+                </div>
+                <button
+                  onClick={() => {
+                    logout();
+                    setMenuOpen(false);
+                  }}
+                  style={{ ...menuItemStyle, background: "none", border: "none", width: "100%", textAlign: "left", cursor: "pointer" }}
+                >
+                  Logout
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </nav>
 
       <Routes>
-        {/* Redirect root to dashboard according to role */}
         <Route
           path="/"
           element={
@@ -110,11 +167,19 @@ function App() {
         {/* Customer Routes */}
         <Route path="/customer-dashboard" element={<CustomerDashboard user={user} logout={logout} />} />
 
-        {/* Catch-all route for unmatched paths */}
+        {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
   );
 }
+
+const menuItemStyle = {
+  display: "block",
+  padding: "8px 16px",
+  color: "#333",
+  textDecoration: "none",
+  cursor: "pointer",
+};
 
 export default App;
