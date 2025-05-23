@@ -1,5 +1,8 @@
+
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
+
 import Login from "./pages/Login";
 import SellerDashboard from "./pages/SellerDashboard";
 import SellerRegister from "./pages/SellerRegister";
@@ -16,8 +19,6 @@ function App() {
     const token = localStorage.getItem("jwtToken");
 
     if (token) {
-      // अगर आपका jwtDecode और user set करने का लॉजिक है तो रखें
-      // नहीं तो आप इसे फिलहाल हटा भी सकते हैं
       try {
         const decoded = jwtDecode(token);
         setUser({
@@ -44,26 +45,27 @@ function App() {
   return (
     <div className="app">
       <Routes>
+        {/* Redirect all users to customer-dashboard */}
         <Route path="/" element={<Navigate to="/customer-dashboard" replace />} />
-
+        
         <Route path="/login" element={<Login />} />
+        <Route path="/seller-register" element={<SellerRegister />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
 
         {/* Admin Routes */}
-        <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/admin8404-login" element={<AdminLogin />} />
         <Route
           path="/admin-dashboard"
           element={
             user && user.role === "admin" ? (
               <AdminDashboard user={user} />
             ) : (
-              <Navigate to="/admin-login" replace />
+              <Navigate to="/admin8404-login" replace />
             )
           }
         />
 
         {/* Seller Routes */}
-        <Route path="/seller-register" element={<SellerRegister />} />
         <Route
           path="/seller-dashboard"
           element={
