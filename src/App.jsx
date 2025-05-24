@@ -1,5 +1,5 @@
 import React from "react";
-import CustomerDashboard from "./CustomerDashboard";
+import CustomerDashboard from "./pages/CustomerDashboard";
 
 function App() {
   return (
