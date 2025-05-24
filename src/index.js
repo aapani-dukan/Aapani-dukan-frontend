@@ -10,7 +10,10 @@ const root = createRoot(document.getElementById("root"));
 root.render(
   <Router>
     <Routes>
-      <Route path="/" element={<App />} />
+      {/* App के अंदर अपने आप /customer-dashboard पर redirect हो जाएगा */}
+      <Route path="/*" element={<App />} />
+      
+      {/* AI Fix के लिए अलग रूट */}
       <Route path="/fix" element={<AiFix />} />
     </Routes>
   </Router>
