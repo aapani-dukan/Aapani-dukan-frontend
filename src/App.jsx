@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import jwtDecode from "jwt-decode";  // यहाँ सही तरीके से इम्पोर्ट करें
 
 import Login from "./pages/Login";
 import SellerDashboard from "./pages/SellerDashboard";
@@ -10,72 +9,24 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AuthCallback from "./pages/AuthCallback";
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const token = localStorage.getItem("jwtToken");
-
-    if (token) {
-      try {
-        const decoded = jwtDecode(token);  // jwtDecode का सही उपयोग
-        setUser({
-          uid: decoded.uid,
-          email: decoded.email,
-          role: decoded.role,
-        });
-      } catch (error) {
-        console.error("Invalid token:", error);
-        setUser(null);
-        localStorage.removeItem("jwtToken");
-      }
-    } else {
-      setUser(null);
-    }
-
-    setLoading(false);
-  }, []);
-
-  if (loading) {
-    return <div>लोड हो रहा है...</div>;
-  }
+  // फिलहाल user/token को हटाया गया है ताकि blank page न आए
+  // बाद में इसे step-by-step जोड़ेंगे
 
   return (
     <div className="app">
       <Routes>
-        {/* Redirect all users to customer-dashboard */}
+        {/* Redirect home to customer-dashboard */}
         <Route path="/" element={<Navigate to="/customer-dashboard" replace />} />
-        
+
+        {/* Basic Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
-
-        {/* Admin Routes */}
         <Route path="/admin8404-login" element={<AdminLogin />} />
-        <Route
-          path="/admin-dashboard"
-          element={
-            user && user.role === "admin" ? (
-              <AdminDashboard user={user} />
-            ) : (
-              <Navigate to="/admin8404-login" replace />
-            )
-          }
-        />
 
-        {/* Seller Routes */}
-        <Route
-          path="/seller-dashboard"
-          element={
-            user && user.role === "seller" ? (
-              <SellerDashboard user={user} />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
-
-        {/* Customer Route — accessible by all */}
-        <Route path="/customer-dashboard" element={<CustomerDashboard user={user} />} />
+        {/* इन सबमे फिलहाल बिना सुरक्षा के डायरेक्ट एक्सेस */}
+        <Route path="/admin-dashboard" element={<AdminDashboard user={null} />} />
+        <Route path="/seller-dashboard" element={<SellerDashboard user={null} />} />
+        <Route path="/customer-dashboard" element={<CustomerDashboard user={null} />} />
       </Routes>
     </div>
   );
