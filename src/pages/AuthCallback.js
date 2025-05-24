@@ -1,4 +1,3 @@
-// src/pages/AuthCallback.js
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -8,15 +7,15 @@ const AuthCallback = () => {
   useEffect(() => {
     const getToken = async () => {
       try {
-        const res = await fetch("https://your-backend.com/auth/google/callback", {
+        const res = await fetch("https://aapani-dukan-backend-11.onrender.com/auth/google/callback", {
           credentials: "include",
         });
+
         const data = await res.json();
 
         if (data.token && typeof data.token === "string") {
-          // सही key से token सेट करें
           localStorage.setItem("jwtToken", data.token);
-          navigate("/"); // Redirect to main route (it will decide role-based route)
+          navigate("/"); // Login successful → redirect to dashboard
         } else {
           console.error("Invalid or missing token from backend:", data);
           navigate("/login");
