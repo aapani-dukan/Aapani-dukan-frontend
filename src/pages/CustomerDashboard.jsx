@@ -4,7 +4,15 @@ export default function CustomerDashboard() { const [products, setProducts] = us
 
 const customerMobile = localStorage.getItem("loggedInCustomer");
 
-useEffect(() => { fetch(${BASE_URL}/products) .then((res) => res.json()) .then((data) => { const approved = data.filter((p) => p.approved); setProducts(approved); }) .catch((err) => console.error("Product fetch error:", err));
+useEffect(() => {
+  fetch(`${BASE_URL}/products`)
+    .then((res) => res.json())
+    .then((data) => {
+      const approved = data.filter((p) => p.approved);
+      setProducts(approved);
+    })
+    .catch((err) => console.error("Product fetch error:", err));
+}, []);
 
 if (customerMobile) {
   fetch(`${BASE_URL}/orders?mobile=${customerMobile}`)
