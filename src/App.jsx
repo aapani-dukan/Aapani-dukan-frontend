@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
-import SellerRegister from "./pages/SellerRegister";
-import SellerDashboard from "./pages/SellerDashboard";
+import CustomerDashboard from "./pages/CustomerDashboard";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -13,7 +12,7 @@ function App() {
 
     if (token) {
       try {
-        const decoded = JSON.parse(atob(token)); // simulate decode
+        const decoded = jwtDecode(token);
         setUser({
           uid: decoded.uid,
           email: decoded.email,
@@ -29,20 +28,11 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/seller-register" replace />} />
+      {/* App खुलते ही customer-dashboard पर redirect होगा */}
+      <Route path="/" element={<Navigate to="/customer-dashboard" replace />} />
 
-      <Route path="/seller-register" element={<SellerRegister />} />
-      
-      <Route
-        path="/seller-dashboard"
-        element={
-          user && user.role === "seller" ? (
-            <SellerDashboard user={user} />
-          ) : (
-            <Navigate to="/seller-register" replace />
-          )
-        }
-      />
+      {/* Customer Dashboard */}
+      <Route path="/customer-dashboard" element={<CustomerDashboard user={user} />} />
     </Routes>
   );
 }
