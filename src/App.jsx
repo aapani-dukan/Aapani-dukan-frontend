@@ -1,29 +1,50 @@
-// src/pages/CustomerDashboard.jsx
+import React, { useEffect, useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import SellerRegister from "./pages/SellerRegister";
+import SellerDashboard from "./pages/SellerDashboard";
 
-function CustomerDashboard({ user }) {
-  const navigate = useNavigate();
+function App() {
+  const [user, setUser] = useState(null);
 
-  const handleLogout = () => {
-    localStorage.removeItem("jwtToken");
-    navigate("/login");
-  };
+  useEffect(() => {
+    const token = localStorage.getItem("jwtToken");
+
+    if (token) {
+      try {
+        const decoded = JSON.parse(atob(token)); // simulate decode
+        setUser({
+          uid: decoded.uid,
+          email: decoded.email,
+          role: decoded.role,
+        });
+      } catch (error) {
+        console.error("Invalid token:", error);
+        setUser(null);
+        localStorage.removeItem("jwtToken");
+      }
+    }
+  }, []);
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold">कस्टमर डैशबोर्ड</h1>
-      <p>स्वागत है, {user?.email || "यूज़र"}!</p>
+    <Routes>
+      <Route path="/" element={<Navigate to="/seller-register" replace />} />
 
-      <button
-        onClick={handleLogout}
-        className="mt-4 px-4 py-2 bg-red-500 text-white rounded"
-      >
-        लॉगआउट करें
-      </button>
-    </div>
+      <Route path="/seller-register" element={<SellerRegister />} />
+      
+      <Route
+        path="/seller-dashboard"
+        element={
+          user && user.role === "seller" ? (
+            <SellerDashboard user={user} />
+          ) : (
+            <Navigate to="/seller-register" replace />
+          )
+        }
+      />
+    </Routes>
   );
 }
 
-export default CustomerDashboard;
+export default App;
