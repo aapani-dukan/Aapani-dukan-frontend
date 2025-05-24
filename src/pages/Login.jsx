@@ -18,7 +18,8 @@ export default function Login() {
     setError("");
     try {
       // Backend के Google OAuth endpoint पर redirect करें
-      window.location.href = "https://your-backend.com/auth/google";
+    
+  window.location.href = "https://aapani-dukan-backend-11.onrender.com/auth/google";
     } catch (err) {
       console.error(err);
       setError("लॉगिन में समस्या आई, कृपया पुनः प्रयास करें");
