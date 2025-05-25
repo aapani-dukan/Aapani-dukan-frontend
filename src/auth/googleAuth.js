@@ -8,3 +8,19 @@ export const handleGoogleLogin = async () => {
     console.error("Login failed:", error);
   }
 };
+// authRoutes.js या index.js जैसी किसी backend फाइल में
+const express = require("express");
+const passport = require("passport");
+
+const router = express.Router();
+
+// ये route Google OAuth callback handle करेगा
+router.get("/auth/callback", 
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    // Successful authentication
+ res.redirect("https://aapani-dukan-frontend.vercel.app/CustomerDashboard");
+  }
+);
+
+module.exports = router;
