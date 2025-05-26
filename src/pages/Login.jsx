@@ -1,26 +1,23 @@
-import React, { useEffect } from "react";
+
+ import React, { useEffect, useState } from "react"; 
 import { useNavigate } from "react-router-dom";
 
-function Login() {
-  const navigate = useNavigate();
+export default function Login() { const [error, setError] = useState(""); const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem("jwtToken"); // Change done here
-    if (token) {
-      navigate("/customer-dashboard");
-    }
-  }, [navigate]);
+useEffect(() => { // अगर पहले से token है, तो सीधे डैशबोर्ड पर जाएं const token = localStorage.getItem("token"); if (token) { navigate("/dashboard"); } }, [navigate]);
 
-  const handleLogin = () => {
-    window.location.href = "https://aapani-dukan-backend-4444.vercel.app/auth/google";
-  };
+const handleGoogleLogin = () => { setError(""); try { // Backend के Google OAuth endpoint पर redirect करें
 
-  return (
-    <div>
-      <h1>Login Page</h1>
-      <button onClick={handleLogin}>Login with Google</button>
-    </div>
-  );
+window.location.href = "https://aapani-dukan-backend-11.onrender.com/auth/google"; } catch (err) { console.error(err); setError("लॉगिन में समस्या आई, कृपया पुनः प्रयास करें"); } };
+
+return ( 
+
+Google से लॉगिन करें
+
+{error && <div style={{ color: "red", marginBottom: "10px" }}>{error}
+
 }
 
-export default Login;
+Google Login 
+
+); }
