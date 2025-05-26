@@ -10,7 +10,7 @@ const AuthCallback = () => {
 
     if (token) {
       localStorage.setItem("jwtToken", token);
-      navigate("/"); // या जो भी पेज आप दिखाना चाहते हैं
+      navigate("/CustomerDashboard"); // या जो भी पेज आप दिखाना चाहते हैं
     } else {
       console.error("Token missing in callback URL");
       navigate("/login");
