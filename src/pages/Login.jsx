@@ -9,7 +9,7 @@ export default function Login() {
     // अगर पहले से token है, तो सीधे डैशबोर्ड पर जाएं
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/dashboard");
+      navigate("/customer-dashboard");
     }
   }, [navigate]);
 
