@@ -1,23 +1,23 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const AuthCallback = () => {
+function AuthCallback() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const token = urlParams.get("token");
+    const queryParams = new URLSearchParams(window.location.search);
+    const token = queryParams.get("token");
 
     if (token) {
-      localStorage.setItem("jwtToken", token);
-      navigate("/CustomerDashboard"); // या जो भी पेज आप दिखाना चाहते हैं
+      localStorage.setItem("jwtToken", token); // Change done here
+      navigate("/customer-dashboard"); // Changed from /login to /customer-dashboard
     } else {
-      console.error("Token missing in callback URL");
+      console.error("Token not found in callback");
       navigate("/login");
     }
   }, [navigate]);
 
-  return <div>Login complete. Redirecting...</div>;
-};
+  return <div>Processing login...</div>;
+}
 
 export default AuthCallback;
