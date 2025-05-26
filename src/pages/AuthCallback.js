@@ -1,30 +1,27 @@
-import { useEffect } from "react"; import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AuthCallback = () => { const navigate = useNavigate();
+const AuthCallback = () => {
+  const navigate = useNavigate();
 
-useEffect(() => { const urlParams = new URLSearchParams(window.location.search); const token = urlParams.get("jwtToken");
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("jwtToken");
 
-if (token) {
+    if (token) {
+      localStorage.setItem("jwtToken", token);
+      navigate("/customer-dashboard");
+    } else {
+      console.error("Token missing in callback URL");
+      navigate("/login");
+    }
+  }, [navigate]);
 
-localStorage.setItem("jwtToken", token);
-
-navigate("/customer-dashboard"); // या जो भी पेज आप दिखाना चाहते हैं
-
-} else {
-
-console.error("Token missing in callback URL");
-
-navigate("/login");
-
-}
-
-}, [navigate]);
-
-return 
-
-Login complete. Redirecting...
-
-; };
+  return (
+    <div>
+      Login complete. Redirecting...
+    </div>
+  );
+};
 
 export default AuthCallback;
-
