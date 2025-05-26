@@ -8,7 +8,7 @@ if (token) {
 
 localStorage.setItem("jwtToken", token);
 
-navigate("/CustomerDashboard"); // या जो भी पेज आप दिखाना चाहते हैं
+navigate("/customer-dashboard"); // या जो भी पेज आप दिखाना चाहते हैं
 
 } else {
 
