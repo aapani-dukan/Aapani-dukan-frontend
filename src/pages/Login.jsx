@@ -1,40 +1,26 @@
-// Login.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Login() {
-  const [error, setError] = useState("");
+function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // अगर पहले से token है, तो सीधे डैशबोर्ड पर जाएं
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("jwtToken"); // Change done here
     if (token) {
-      navigate("/dashboard");
+      navigate("/customer-dashboard");
     }
   }, [navigate]);
 
-  const handleGoogleLogin = () => {
-    setError("");
-    try {
-      // Backend के Google OAuth endpoint पर redirect करें
-    
-  window.location.href = "https://aapani-dukan-backend-11.onrender.com/auth/google";
-    } catch (err) {
-      console.error(err);
-      setError("लॉगिन में समस्या आई, कृपया पुनः प्रयास करें");
-    }
+  const handleLogin = () => {
+    window.location.href = "https://aapani-dukan-backend-4444.vercel.app/auth/google";
   };
 
   return (
-    <div className="login-form">
-      <h2>Google से लॉगिन करें</h2>
-
-      {error && <div style={{ color: "red", marginBottom: "10px" }}>{error}</div>}
-
-      <button onClick={handleGoogleLogin} className="google-login-btn">
-        Google Login
-      </button>
+    <div>
+      <h1>Login Page</h1>
+      <button onClick={handleLogin}>Login with Google</button>
     </div>
   );
 }
+
+export default Login;
