@@ -7,7 +7,7 @@ export default function Login() {
 
   useEffect(() => {
     // अगर पहले से token है, तो सीधे डैशबोर्ड पर जाएं
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("jwtToken");
     if (token) {
       navigate("/customer-dashboard");
     }
