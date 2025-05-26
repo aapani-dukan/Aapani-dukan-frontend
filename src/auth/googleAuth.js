@@ -19,7 +19,7 @@ router.get("/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
     // Successful authentication
- res.redirect("https://aapani-dukan-frontend-4444.vercel.app/CustomerDashboard");
+ res.redirect("https://aapani-dukan-frontend-4444.vercel.app/customer-dashboard");
   }
 );
 
