@@ -15,7 +15,7 @@ const passport = require("passport");
 const router = express.Router();
 
 // ये route Google OAuth callback handle करेगा
-router.get("/auth/callback", 
+router.get("/auth/google/callback", 
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
     // Successful authentication
