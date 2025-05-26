@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BASE_URL } from "../config";
 
 export default function CustomerDashboard() {
@@ -8,10 +8,28 @@ export default function CustomerDashboard() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Step 1: Token read and decode
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get("token");
+
+    if (token) {
+      localStorage.setItem("jwtToken", token);
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload?.uid) {
+          localStorage.setItem("loggedInCustomer", payload.uid);
+        }
+      } catch (error) {
+        console.error("Token decode error:", error);
+      }
+    }
+  }, [location.search]);
 
   const customerMobile = localStorage.getItem("loggedInCustomer");
 
-  // Fetch approved products on mount
   useEffect(() => {
     fetch(`${BASE_URL}/products`)
       .then((res) => res.json())
@@ -22,7 +40,6 @@ export default function CustomerDashboard() {
       .catch((err) => console.error("Product fetch error:", err));
   }, []);
 
-  // Fetch orders when customerMobile is available
   useEffect(() => {
     if (customerMobile) {
       fetch(`${BASE_URL}/orders?mobile=${customerMobile}`)
@@ -81,7 +98,6 @@ export default function CustomerDashboard() {
 
   return (
     <div className="dashboard" style={{ position: "relative", padding: "20px" }}>
-      {/* Header */}
       <div className="header">
         <div style={{ position: "absolute", top: "10px", right: "10px" }}>
           <button onClick={() => setMenuOpen(!menuOpen)} style={{ fontSize: "24px" }}>
@@ -153,15 +169,9 @@ export default function CustomerDashboard() {
         ) : (
           orders.map((order, idx) => (
             <div key={idx} className="order-card">
-              <p>
-                <strong>Date:</strong> {new Date(order.time).toLocaleString()}
-              </p>
-              <p>
-                <strong>Payment:</strong> {order.payment}
-              </p>
-              <p>
-                <strong>Status:</strong> {order.status}
-              </p>
+              <p><strong>Date:</strong> {new Date(order.time).toLocaleString()}</p>
+              <p><strong>Payment:</strong> {order.payment}</p>
+              <p><strong>Status:</strong> {order.status}</p>
               <ul>
                 {order.items.map((item, i) => (
                   <li key={i}>
@@ -169,9 +179,7 @@ export default function CustomerDashboard() {
                   </li>
                 ))}
               </ul>
-              <p>
-                <strong>Total:</strong> ₹{order.total}
-              </p>
+              <p><strong>Total:</strong> ₹{order.total}</p>
             </div>
           ))
         )}
