@@ -1,4 +1,4 @@
-{ useEffect, useState } from "react";
+import{ useEffect, useState } from "react";
 import { BASE_URL } from "../config";
 
 export default function useProducts() {
