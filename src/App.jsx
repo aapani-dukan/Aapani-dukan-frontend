@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import SellerDashboard from "./SellerDashboard";
+import SellerDashboard from "./pages/SellerDashboard";
 import SellerRegister from "./SellerRegister";
 import Login from "./Login";
 
