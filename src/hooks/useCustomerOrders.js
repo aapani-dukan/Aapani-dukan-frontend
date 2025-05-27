@@ -7,11 +7,11 @@ export default function useCustomerOrders(customerMobile) {
   useEffect(() => {
     if (customerMobile) {
       fetch(`${BASE_URL}/orders?mobile=${customerMobile}`)
-        .then(res => res.json())
-        .then(data => setOrders(data))
-        .catch(err => console.error("Orders fetch error:", err));
+        .then((res) => res.json())
+        .then((data) => setOrders(data))
+        .catch((err) => console.error("Orders fetch error:", err));
     }
   }, [customerMobile]);
 
-  return [orders, setOrders];
+  return orders;
 }
