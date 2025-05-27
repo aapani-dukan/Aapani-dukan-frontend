@@ -1,11 +1,11 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "../pages/home";
+import Home from "./pages/home";
 import About from "../pages/about";
-import CustomerDashboard from "../pages/CustomerDashboard";
-import SellerDashboard from "../pages/SellerDashboard";
-import SellerRegister from "../pages/SellerRegister";
-import Login from "../pages/Login";
+import CustomerDashboard from "./pages/CustomerDashboard";
+import SellerDashboard from "./pages/SellerDashboard";
+import SellerRegister from "./pages/SellerRegister";
+import Login from "./pages/Login";
 
 export default function Router() {
   return (
