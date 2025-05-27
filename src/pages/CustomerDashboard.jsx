@@ -1,53 +1,40 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { BASE_URL } from "../config";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import useCustomerToken from "../hooks/useCustomerToken";
+import useProducts from "../hooks/useProducts";
+import useCustomerOrders from "../hooks/useCustomerOrders";
+
+import ProductList from "../components/ProductList";
+import CartSummary from "../components/CartSummary";
+import OrderHistory from "../components/OrderHistory";
+
+const menuItems = [
+  { label: "Customer Login", path: "/login" },
+  { label: "Seller Login", path: "/seller-login" },
+  { label: "Seller Registration", path: "/seller-register" },
+];
+
+const menuItemStyle = {
+  padding: "10px",
+  cursor: "pointer",
+  borderBottom: "1px solid #eee",
+  color: "black",
+  backgroundColor: "white",
+};
 
 export default function CustomerDashboard() {
-  const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [orders, setOrders] = useState([]);
-  const navigate = useNavigate();
-  const location = useLocation();
+  useCustomerToken();
 
-  // Step 1: Token read and decode
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const token = queryParams.get("token");
-
-    if (token) {
-      localStorage.setItem("jwtToken", token);
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        if (payload?.uid) {
-          localStorage.setItem("loggedInCustomer", payload.uid);
-        }
-      } catch (error) {
-        console.error("Token decode error:", error);
-      }
-    }
-  }, [location.search]);
+  const products = useProducts();
 
   const customerMobile = localStorage.getItem("loggedInCustomer");
 
-  useEffect(() => {
-    fetch(`${BASE_URL}/products`)
-      .then((res) => res.json())
-      .then((data) => {
-        const approved = data.filter((p) => p.approved);
-        setProducts(approved);
-      })
-      .catch((err) => console.error("Product fetch error:", err));
-  }, []);
+  const [orders, setOrders] = useCustomerOrders(customerMobile);
 
-  useEffect(() => {
-    if (customerMobile) {
-      fetch(`${BASE_URL}/orders?mobile=${customerMobile}`)
-        .then((res) => res.json())
-        .then((data) => setOrders(data))
-        .catch((err) => console.error("Orders fetch error:", err));
-    }
-  }, [customerMobile]);
+  const [cart, setCart] = useState([]);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const addToCart = (product) => {
     setCart((prev) => [...prev, product]);
@@ -74,7 +61,7 @@ export default function CustomerDashboard() {
       time: new Date().toISOString(),
     };
 
-    const res = await fetch(`${BASE_URL}/place-order`, {
+    const res = await fetch(`${process.env.REACT_APP_BASE_URL || "http://localhost:5000"}/place-order`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(order),
@@ -83,7 +70,8 @@ export default function CustomerDashboard() {
     if (res.ok) {
       alert(`Order placed successfully via ${paymentMethod}`);
       setCart([]);
-      const updated = await fetch(`${BASE_URL}/orders?mobile=${customerMobile}`);
+      // Refresh orders
+      const updated = await fetch(`${process.env.REACT_APP_BASE_URL || "http://localhost:5000"}/orders?mobile=${customerMobile}`);
       const data = await updated.json();
       setOrders(data);
     } else {
@@ -134,70 +122,11 @@ export default function CustomerDashboard() {
         <h2>Customer Dashboard</h2>
       </div>
 
-      {/* Product List */}
-      <div className="product-list">
-        <h3>Products</h3>
-        {products.map((product) => (
-          <div className="product-card" key={product._id}>
-            <img src={product.img} alt={product.name} />
-            <h4>{product.name}</h4>
-            <p>Price: ₹{product.price}</p>
-            <button onClick={() => addToCart(product)}>Add to Bucket</button>
-          </div>
-        ))}
-      </div>
+      <ProductList products={products} addToCart={addToCart} />
 
-      {/* Cart Summary */}
-      <div className="cart-summary">
-        <h3>Bucket Items: {cart.length}</h3>
-        <ul>
-          {cart.map((item, idx) => (
-            <li key={idx}>
-              {item.name} - ₹{item.price}
-            </li>
-          ))}
-        </ul>
-        <h4>Total: ₹{totalPrice}</h4>
-        {cart.length > 0 && <button onClick={handleBuy}>Buy</button>}
-      </div>
+      <CartSummary cart={cart} totalPrice={totalPrice} handleBuy={handleBuy} />
 
-      {/* Order History */}
-      <div className="order-history">
-        <h3>Order History</h3>
-        {orders.length === 0 ? (
-          <p>No orders yet.</p>
-        ) : (
-          orders.map((order, idx) => (
-            <div key={idx} className="order-card">
-              <p><strong>Date:</strong> {new Date(order.time).toLocaleString()}</p>
-              <p><strong>Payment:</strong> {order.payment}</p>
-              <p><strong>Status:</strong> {order.status}</p>
-              <ul>
-                {order.items.map((item, i) => (
-                  <li key={i}>
-                    {item.name} - ₹{item.price}
-                  </li>
-                ))}
-              </ul>
-              <p><strong>Total:</strong> ₹{order.total}</p>
-            </div>
-          ))
-        )}
-      </div>
+      <OrderHistory orders={orders} />
     </div>
   );
 }
-
-const menuItems = [
-  { label: "Customer Login", path: "/login" },
-  { label: "Seller Login", path: "/seller-login" },
-  { label: "Seller Registration", path: "/seller-register" },
-];
-
-const menuItemStyle = {
-  padding: "10px",
-  cursor: "pointer",
-  borderBottom: "1px solid #eee",
-  color: "black",
-  backgroundColor: "white",
-};
