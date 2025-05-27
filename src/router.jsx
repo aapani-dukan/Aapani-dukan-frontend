@@ -11,7 +11,7 @@ export default function Router() {
   return (
     <Routes>
       {/* App खुलते ही यह डैशबोर्ड खुलेगा */}
-      <Route path="/" element={<CustomerDashboard />} />
+      <Route path="/customer-dashboard" element={<CustomerDashboard />} />
 
       {/* बाकी पेज */}
       <Route path="/home" element={<Home />} />
@@ -19,7 +19,7 @@ export default function Router() {
       <Route path="/login" element={<Login />} />
       <Route path="/seller-register" element={<SellerRegister />} />
       <Route path="/seller-dashboard" element={<SellerDashboard />} />
-      <Route path="/CustomerDashboard" element={<CustomerDashboard />} />
+      
     </Routes>
   );
 }
