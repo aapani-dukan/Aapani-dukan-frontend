@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import useCustomerToken from "../hooks/useCustomerToken";
-import useProducts from "../hooks/useProducts";
-import useCustomerOrders from "../hooks/useCustomerOrders";
+import useCustomerToken from "../hook/useCustomerToken";
+import useProducts from "../hook/useProducts";
+import useCustomerOrders from "../hook/useCustomerOrders";
 
 import ProductList from "../components/ProductList";
 import CartSummary from "../components/CartSummary";
