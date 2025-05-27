@@ -15,7 +15,7 @@ export default function Router() {
 
       {/* बाकी पेज */}
       <Route path="/home" element={<Home />} />
-      
+      <Route path="/" element={<CustomerDashboard />} />
       <Route path="/login" element={<Login />} />
       <Route path="/seller-register" element={<SellerRegister />} />
       <Route path="/seller-dashboard" element={<SellerDashboard />} />
