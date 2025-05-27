@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SellerDashboard from "./pages/SellerDashboard";
-import SellerRegister from "./SellerRegister";
+import SellerRegister from "./pages/SellerRegister";
 import Login from "./Login";
 
 export default function App() {
