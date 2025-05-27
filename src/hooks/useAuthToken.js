@@ -24,6 +24,4 @@ export default function useAuthToken() {
       const uid = localStorage.getItem("loggedInCustomer");
       if (uid) setCustomerMobile(uid);
     }
-  }, [location.search]);
-
-  return { customerMobile };
+  }, [location.search]);return { customerMobile };
