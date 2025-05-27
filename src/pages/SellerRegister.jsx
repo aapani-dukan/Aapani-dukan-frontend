@@ -73,6 +73,7 @@ export default function SellerRegister() {
             placeholder="Name"
             required
             className="w-full p-2 border"
+            value={formData.name}
             onChange={handleChange}
           />
           <input
@@ -81,6 +82,7 @@ export default function SellerRegister() {
             placeholder="Shop Name"
             required
             className="w-full p-2 border"
+            value={formData.shopName}
             onChange={handleChange}
           />
           <input
@@ -90,6 +92,7 @@ export default function SellerRegister() {
             pattern="[0-9]{10}"
             required
             className="w-full p-2 border"
+            value={formData.mobile}
             onChange={handleChange}
           />
           <button type="submit" className="bg-blue-600 text-white px-4 py-2">
@@ -106,6 +109,7 @@ export default function SellerRegister() {
             placeholder="Enter OTP"
             required
             className="w-full p-2 border"
+            value={formData.otp}
             onChange={handleChange}
           />
           <button type="submit" className="bg-green-600 text-white px-4 py-2">
