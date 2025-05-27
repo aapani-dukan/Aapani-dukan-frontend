@@ -1,168 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import SellerDashboard from "./SellerDashboard";
+import SellerRegister from "./SellerRegister";
+import Login from "./Login";
 
-import { Routes, Route, Navigate } from "react-router-dom";
-
-import { jwtDecode } from "jwt-decode";
-
-
-
-import Login from "./pages/Login";
-
-import SellerDashboard from "./pages/SellerDashboard";
-
-import CustomerDashboard from "./pages/CustomerDashboard";
-
-import AdminLogin from "./pages/AdminLogin";
-
-import AdminDashboard from "./pages/AdminDashboard";
-
-import AuthCallback from "./pages/AuthCallback";
-
-
-
-function App() {
-
+export default function App() {
   const [user, setUser] = useState(null);
+  const [products, setProducts] = useState([]);
 
-  const [loading, setLoading] = useState(true);
-
-
-
+  // Check if user is logged in (localStorage या कोई लॉजिक)
   useEffect(() => {
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    if (savedUser) setUser(savedUser);
 
-    const token = localStorage.getItem("jwtToken");
-
-
-
-    if (token) {
-
-      try {
-
-        const decoded = jwtDecode(token);
-
-        setUser({
-
-          uid: decoded.uid,
-
-          email: decoded.email,
-
-          role: decoded.role,
-
-        });
-
-      } catch (error) {
-
-        console.error("Invalid token:", error);
-
-        setUser(null);
-
-        localStorage.removeItem("jwtToken");
-
-      }
-
-    } else {
-
-      setUser(null);
-
-    }
-
-
-
-    setLoading(false);
-
+    const savedProducts = JSON.parse(localStorage.getItem("products")) || [];
+    setProducts(savedProducts);
   }, []);
 
+  const handleLogin = (loggedInUser) => {
+    setUser(loggedInUser);
+    localStorage.setItem("user", JSON.stringify(loggedInUser));
+  };
 
-
-  if (loading) {
-
-    return <div>लोड हो रहा है...</div>;
-
-  }
-
-
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("user");
+  };
 
   return (
+    <div className="app-container">
+      {!user && (
+        <>
+          <Login onLogin={handleLogin} />
+          <hr />
+          <SellerRegister />
+        </>
+      )}
 
-    <div className="app">
-
-      <Routes>
-
-        {/* Redirect all users to customer-dashboard */}
-
-        <Route path="/" element={<Navigate to="/customer-dashboard" replace />} />
-
-        
-
-        <Route path="/login" element={<Login />} />
-
-        <Route path="/auth/google/callback" element={<AuthCallback />} />
-
-
-
-        {/* Admin Routes */}
-
-        <Route path="/admin8404-login" element={<AdminLogin />} />
-
-        <Route
-
-          path="/admin-dashboard"
-
-          element={
-
-            user && user.role === "admin" ? (
-
-              <AdminDashboard user={user} />
-
-            ) : (
-
-              <Navigate to="/admin8404-login" replace />
-
-            )
-
-          }
-
-        />
-
-
-
-        {/* Seller Routes */}
-
-        <Route
-
-          path="/seller-dashboard"
-
-          element={
-
-            user && user.role === "seller" ? (
-
-              <SellerDashboard user={user} />
-
-            ) : (
-
-              <Navigate to="/login" replace />
-
-            )
-
-          }
-
-        />
-
-
-
-        {/* Customer Route — accessible by all */}
-
-        <Route path="/customer-dashboard" element={<CustomerDashboard user={user} />} />
-
-      </Routes>
-
+      {user && (
+        <>
+          <button onClick={handleLogout} style={{ float: "right", margin: "10px" }}>
+            Logout
+          </button>
+          <SellerDashboard user={user} products={products} setProducts={setProducts} />
+        </>
+      )}
     </div>
-
   );
-
 }
-
-
-
-export default App;
-
