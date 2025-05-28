@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const menuItems = [
   { label: "Customer Login", path: "/login" },
+  {lable: "Customer Login, path; "/customer-login},
   { label: "Seller Login", path: "/seller-login" },
   { label: "Seller Registration", path: "/seller-register" },
 ];
