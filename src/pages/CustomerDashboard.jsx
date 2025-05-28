@@ -4,13 +4,28 @@ import { BASE_URL } from "../config";
 import useAuthToken from "../hooks/useAuthToken";
 
 export default function CustomerDashboard() {
-  const { customerMobile } = useAuthToken(); // 🔁 Updated to use hook value
+  const { customerMobile } = useAuthToken();
 
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
+
+  // ✅ URL में token → jwtToken replace logic जोड़ा गया है
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const token = queryParams.get("token");
+
+    if (token) {
+      queryParams.set("jwtToken", token);
+      queryParams.delete("token");
+      const newSearch = queryParams.toString();
+      const newUrl = window.location.pathname + "?" + newSearch;
+
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, []);
 
   useEffect(() => {
     fetch(`${BASE_URL}/products`)
