@@ -7,7 +7,7 @@ export default function useAuthToken() {
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const token = queryParams.get("jwtToken");
+    const token = queryParams.get("jwtToken"); // 🔁 Updated to match AuthCallback
 
     if (token) {
       localStorage.setItem("jwtToken", token);
