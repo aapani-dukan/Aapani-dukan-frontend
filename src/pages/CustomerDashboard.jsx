@@ -4,15 +4,13 @@ import { BASE_URL } from "../config";
 import useAuthToken from "../hooks/useAuthToken";
 
 export default function CustomerDashboard() {
-  useAuthToken();
+  const { customerMobile } = useAuthToken(); // 🔁 Updated to use hook value
 
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
-
-  const customerMobile = localStorage.getItem("loggedInCustomer");
 
   useEffect(() => {
     fetch(`${BASE_URL}/products`)
